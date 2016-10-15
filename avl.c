@@ -155,8 +155,9 @@ static avl_node_t *avl_balance(avl_node_t *node, int factor) {
     return node;
 }
 
-void avl_init(avl_tree_t *tree, void *aux) {
+void avl_init(avl_tree_t *tree, avl_compare_t compare, void* aux) {
     tree->root = NULL;
+    tree->compare = compare;
     tree->aux = aux;
 }
 
@@ -182,9 +183,9 @@ avl_node_t *avl_prev(const avl_node_t *node) {
     return node ? node->prev : NULL;
 }
 
-avl_node_t *avl_search(avl_tree_t *tree, avl_node_t *node, avl_compare_t compare) {
+avl_node_t *avl_search(avl_tree_t *tree, avl_node_t *node) {
     for (avl_node_t *parent = tree->root; parent; ) {
-        int cmp = compare(parent, node, tree->aux);
+        int cmp = tree->compare(parent, node, tree->aux);
         if (cmp > 0) parent = parent->left;
         else if (cmp < 0) parent = parent->right;
         else return parent;
@@ -192,10 +193,10 @@ avl_node_t *avl_search(avl_tree_t *tree, avl_node_t *node, avl_compare_t compare
     return NULL;
 }
 
-void avl_insert(avl_tree_t *tree, avl_node_t *node, avl_compare_t compare) {
+void avl_insert(avl_tree_t *tree, avl_node_t *node) {
     avl_node_t *parent = NULL;
     for (avl_node_t *current = tree->root; current; ) {
-        int cmp = compare(current, node, tree->aux);
+        int cmp = tree->compare(current, node, tree->aux);
         parent = current;
         if (cmp > 0) current = current->left;
         else if (cmp < 0) current = current->right;
@@ -211,7 +212,7 @@ void avl_insert(avl_tree_t *tree, avl_node_t *node, avl_compare_t compare) {
     node->next = NULL;
 
     if (parent) {
-        if (compare(parent, node, tree->aux) > 0) {
+        if (tree->compare(parent, node, tree->aux) > 0) {
             parent->left = node;
             node->next = parent;
             node->prev = parent->prev;

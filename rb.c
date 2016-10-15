@@ -201,12 +201,12 @@ static void rb_erase_color(rb_node_t *node, rb_node_t *parent, rb_tree_t *tree) 
     if (node) rb_set_black(node);
 }
 
-static rb_node_t *rb_insert_try(rb_tree_t *tree, rb_node_t *node, rb_compare_t compare) {
+static rb_node_t *rb_insert_try(rb_tree_t *tree, rb_node_t *node) {
     rb_node_t **p = &tree->root;
     rb_node_t *parent = NULL;
     while (*p) {
         parent = *p;
-        int cmp = compare(node, *p, tree->aux);
+        int cmp = tree->compare(node, *p, tree->aux);
         if (cmp < 0) p = &(*p)->left;
         else if (cmp > 0) p = &(*p)->right;
         else return *p;
@@ -216,20 +216,21 @@ static rb_node_t *rb_insert_try(rb_tree_t *tree, rb_node_t *node, rb_compare_t c
     return NULL;
 }
 
-void rb_init(rb_tree_t *tree, void *aux) {
+void rb_init(rb_tree_t *tree, rb_compare_t compare, void *aux) {
     tree->root = NULL;
+    tree->compare = compare;
     tree->aux = aux;
 }
 
-void rb_insert(rb_tree_t *tree, rb_node_t *node, rb_compare_t compare) {
-    if (rb_insert_try(tree, node, compare)) return;
+void rb_insert(rb_tree_t *tree, rb_node_t *node) {
+    if (rb_insert_try(tree, node)) return;
     rb_insert_color(node, tree);
 }
 
-rb_node_t *rb_search(rb_tree_t *tree, rb_node_t *node, rb_compare_t compare) {
+rb_node_t *rb_search(rb_tree_t *tree, rb_node_t *node) {
     rb_node_t *n = tree->root;
     while (n) {
-        int cmp = compare(node, n, tree->aux);
+        int cmp = tree->compare(node, n, tree->aux);
         if (cmp < 0) n = n->left;
         else if (cmp > 0) n = n->right;
         else return n;

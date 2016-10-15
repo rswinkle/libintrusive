@@ -10,6 +10,8 @@ extern "C" {
 typedef struct rb_node_s rb_node_t;
 typedef struct rb_tree_s rb_tree_t;
 
+typedef int (*rb_compare_t)(const rb_node_t *lhs, const rb_node_t *rhs, const void *aux);
+
 struct rb_node_s {
     uintptr_t parent;
     rb_node_t *right;
@@ -18,17 +20,17 @@ struct rb_node_s {
 
 struct rb_tree_s {
     rb_node_t *root;
+    rb_compare_t compare;
     void *aux;
 };
 
-typedef int (*rb_compare_t)(const rb_node_t *lhs, const rb_node_t *rhs, const void *aux);
 
-void rb_init(rb_tree_t *tree, void *aux);
+void rb_init(rb_tree_t *tree, rb_compare_t compare, void *aux);
 
-void rb_insert(rb_tree_t *tree, rb_node_t *node, rb_compare_t compare);
+void rb_insert(rb_tree_t *tree, rb_node_t *node);
 void rb_remove(rb_tree_t *tree, rb_node_t *node);
 
-rb_node_t *rb_search(rb_tree_t *tree, rb_node_t *node, rb_compare_t compare);
+rb_node_t *rb_search(rb_tree_t *tree, rb_node_t *node);
 
 rb_node_t *rb_head(const rb_tree_t *tree);
 rb_node_t *rb_tail(const rb_tree_t *tree);

@@ -22,15 +22,15 @@ int test_rb_compare(const rb_node_t *lhs, const rb_node_t *rhs, const void *aux)
 void rb() {
     printf(">> RB\n");
     rb_tree_t tree;
-    rb_init(&tree, NULL);
+    rb_init(&tree, &test_rb_compare, NULL);
 
     test_rb_t a = { 1 };
     test_rb_t b = { 2 };
     test_rb_t c = { 3 };
 
-    rb_insert(&tree, &a.node, &test_rb_compare);
-    rb_insert(&tree, &b.node, &test_rb_compare);
-    rb_insert(&tree, &c.node, &test_rb_compare);
+    rb_insert(&tree, &a.node);
+    rb_insert(&tree, &b.node);
+    rb_insert(&tree, &c.node);
 
     // Display them
     rb_node_t *node = rb_head(&tree);
@@ -65,15 +65,15 @@ int test_avl_compare(const avl_node_t *lhs, const avl_node_t *rhs, const void *a
 void avl() {
     printf(">> AVL\n");
     avl_tree_t tree;
-    avl_init(&tree, NULL);
+    avl_init(&tree, &test_avl_compare, NULL);
 
     test_avl_t a = { 1 };
     test_avl_t b = { 2 };
     test_avl_t c = { 3 };
 
-    avl_insert(&tree, &a.node, &test_avl_compare);
-    avl_insert(&tree, &b.node, &test_avl_compare);
-    avl_insert(&tree, &c.node, &test_avl_compare);
+    avl_insert(&tree, &a.node);
+    avl_insert(&tree, &b.node);
+    avl_insert(&tree, &c.node);
 
     // Display them
     avl_node_t *node = avl_head(&tree);

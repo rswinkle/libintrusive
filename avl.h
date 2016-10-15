@@ -10,6 +10,8 @@ extern "C" {
 typedef struct avl_node_s avl_node_t;
 typedef struct avl_tree_s avl_tree_t;
 
+typedef int (*avl_compare_t)(const avl_node_t *a, const avl_node_t *b, const void *aux);
+
 struct avl_node_s {
     uintptr_t parent;
     avl_node_t *left;
@@ -20,17 +22,17 @@ struct avl_node_s {
 
 struct avl_tree_s {
     avl_node_t *root;
+    avl_compare_t compare;
     void *aux;
 };
 
-typedef int (*avl_compare_t)(const avl_node_t *a, const avl_node_t *b, const void *aux);
 
-void avl_init(avl_tree_t *tree, void *aux);
+void avl_init(avl_tree_t *tree, avl_compare_t compare, void* aux);
 
-void avl_insert(avl_tree_t *tree, avl_node_t *node, avl_compare_t compare);
+void avl_insert(avl_tree_t *tree, avl_node_t *node);
 void avl_remove(avl_tree_t *tree, avl_node_t *node);
 
-avl_node_t *avl_search(avl_tree_t *tree, avl_node_t *node, avl_compare_t compare);
+avl_node_t *avl_search(avl_tree_t *tree, avl_node_t *node);
 
 avl_node_t *avl_head(const avl_tree_t *tree);
 avl_node_t *avl_tail(const avl_tree_t *tree);
